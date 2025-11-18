@@ -23,7 +23,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image
+      - name: Build image (no push)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: ghcr.io/ciolock/ue19-lab-05:latest
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/ciolock/ue19-lab-05:latest
+          format: table
+          exit-code: 0
+
+      - name: Push image
         uses: docker/build-push-action@v5
         with:
           context: .
